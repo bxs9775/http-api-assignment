@@ -1,9 +1,35 @@
 const http = require('http');
+const url = require('url');
+
+const responseHandler = require('./responses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
+const urlResponses = {
+  '/': responseHandler.getIndex,
+  '/style.css': responseHandler.getCss,
+  '/success': responseHandler.getSuccess,
+  '/badRequest': responseHandler.getBadRequest,
+  '/unauthorized': responseHandler.getUnauthorized,
+  '/forbidden': responseHandler.getForbidden,
+  '/notImplemented': responseHandler.getNotImplemented,
+  notFound: responseHandler.getNotFound,
+};
+
 const onRequest = (request, response) => {
-  console.log(request.url);
+  const parsedURL = url.parse(request.url);
+
+  console.dir(parsedURL);
+
+  const { pathname } = parsedURL;
+
+  const acceptHeader = request.headers.accept.split(',');
+
+  if (urlResponses[pathname]) {
+    urlResponses[pathname](request, response, parsedURL, acceptHeader);
+  } else {
+    urlResponses.notFound(request, response, parsedURL, acceptHeader);
+  }
 };
 
 http.createServer(onRequest).listen(port);
