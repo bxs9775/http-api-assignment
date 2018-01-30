@@ -1,0 +1,33 @@
+{
+  "name": "http-api-assignment",
+  "version": "1.0.0",
+  "description": "A simple api server made for Rich Media I",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./src --fix",
+    "test": "echo \"Tests complete\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bxs9775/http-api-assignment.git"
+  },
+  "keywords": [
+    "API",
+    "AJAX",
+    "XML",
+    "JSON",
+    "Node"
+  ],
+  "author": "Brian Sandon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bxs9775/http-api-assignment/issues"
+  },
+  "homepage": "https://github.com/bxs9775/http-api-assignment#readme",
+  "devDependencies": {
+    "eslint": "^4.16.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0"
+  }
+}
