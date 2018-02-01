@@ -4,31 +4,31 @@ const index = fs.readFileSync(`${__dirname}/../client/client.html`);
 const css = fs.readFileSync(`${__dirname}/../client/style.css`);
 
 const errors = {
-  Success: {
-    code: '200',
+  success: {
+    code: 200,
     message: 'This is a successful response',
   },
-  'Bad Request': {
+  badRequest: {
     code: 400,
     message: 'Missing valid query parameter set to true',
   },
-  Unauthorized: {
+  unauthorized: {
     code: 401,
     message: 'Missing loggedIn query parameter set to yes',
   },
-  Forbidden: {
+  forbidden: {
     code: 403,
     message: 'You do not have access to this content',
   },
-  Internal: {
+  internal: {
     code: 500,
     message: 'Internal Server Error. Something went wrong.',
   },
-  'Not Implemented': {
+  notImplemented: {
     code: 501,
     message: 'A get request for this page has not been implemented yet. Check again later for updated content.',
   },
-  'Not Found': {
+  notFound: {
     code: 404,
     message: 'The page you are looking for was not found.',
   },
@@ -43,7 +43,7 @@ const respond = (request, response, errId, content, accept) => {
 };
 
 const successMessage = (request, response, accept) => {
-  const errId = 'Success';
+  const errId = 'success';
   if (accept[0] === 'text/xml') {
     const xmlObj = `<response><message>${errors[errId].message}</message></response>`;
     respond(request, response, errId, xmlObj, 'text/xml');
@@ -75,11 +75,11 @@ const failureMessage = (request, response, errId, accept) => {
 
 // Public get methods
 const getIndex = (request, response, params, accept) => {
-  respond(request, response, 'Success', index, 'text/html');
+  respond(request, response, 'success', index, 'text/html');
 };
 
 const getCss = (request, response, params, accept) => {
-  respond(request, response, 'Success', css, 'text/css');
+  respond(request, response, 'success', css, 'text/css');
 };
 
 const getSuccess = (request, response, params, accept) => {
@@ -88,7 +88,7 @@ const getSuccess = (request, response, params, accept) => {
 
 const getBadRequest = (request, response, params, accept) => {
   if (!params.valid || params.valid !== 'true') {
-    failureMessage(request, response, 'Bad Request', accept);
+    failureMessage(request, response, 'badRequest', accept);
   } else {
     successMessage(request, response, accept);
   }
@@ -96,27 +96,27 @@ const getBadRequest = (request, response, params, accept) => {
 
 const getUnauthorized = (request, response, params, accept) => {
   if (!params.loggedIn || params.loggedIn !== 'yes') {
-    failureMessage(request, response, 'Unauthorized', accept);
+    failureMessage(request, response, 'unauthorized', accept);
   } else {
     successMessage(request, response, accept);
   }
 };
 
 const getForbidden = (request, response, params, accept) => {
-  failureMessage(request, response, 'Forbidden', accept);
+  failureMessage(request, response, 'forbidden', accept);
 };
 
 const getNotImplemented = (request, response, params, accept) => {
-  failureMessage(request, response, 'Not Implemented', accept);
+  failureMessage(request, response, 'notImplemented', accept);
 };
 
 const getInternal = (request, response, params, accept) => {
-  failureMessage(request, response, 'Internal', accept);
+  failureMessage(request, response, 'internal', accept);
 };
 
 
 const getNotFound = (request, response, url, accept) => {
-  failureMessage(request, response, 'Not Found', accept);
+  failureMessage(request, response, 'notFound', accept);
 };
 
 // Export modules
