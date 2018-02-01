@@ -15,23 +15,26 @@
       500: 'Internal Server Error',
       501: 'Not Implemented',
       404: 'Not Found',
-      unknown: 'Unknown error',
+      unknown: 'Unknown Error',
     }
     
     //function to handle the xhr response
     const handleResponse = (xhr) => {
       const content = document.querySelector("#content");
       
+      //removes previously generated content
       while(content.firstChild){
         content.removeChild(content.firstChild);
       }
       
+      //adds a header level 1 element with the error name
       let header = document.createElement("h1");
       
       if(errorCodes[xhr.status]){
+        //sets the header to the error name
         header.textContent = errorCodes[xhr.status];
       } else{
-        //Should not occur from the current server design, but added in case an error code is added to the responses, but not listed in error codes.
+        //should not occur from the current server design, but added in case an error code is added to the responses, but not listed in error codes.
         header.textContent = errorCodes[unknown];
       }
       
@@ -39,6 +42,7 @@
       
       const type = xhr.getResponseHeader("content-type");
       
+      //adds the message as a p element
       const p1 = document.createElement("p");
       if(type === 'application/json'){
         const parsedJSON = JSON.parse(xhr.response);
@@ -54,7 +58,7 @@
     
     //function to send an ajax request
     const sendAjax = (url) => {
-      //Get the type selector
+      //get the type selector
       const typeSelect = document.querySelector("#type");
       
       //create a new xhr(ajax request)
@@ -77,6 +81,7 @@
       const sendButton = document.querySelector("#send");
       const pageSelector = document.querySelector("#page");
       
+      //creates an event listiner so that the client sends an ajax request when the send button is clicked
       sendButton.addEventListener('click',() => sendAjax(pageSelector.value));
     }
     

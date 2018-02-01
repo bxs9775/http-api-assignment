@@ -6,6 +6,7 @@ const responseHandler = require('./responses.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
+// struct mapping urls to responseHandler functions.
 const urlResponses = {
   '/': responseHandler.getIndex,
   '/style.css': responseHandler.getCss,
@@ -18,17 +19,21 @@ const urlResponses = {
   notFound: responseHandler.getNotFound,
 };
 
+// an onRequest event to handle incoming http requests
 const onRequest = (request, response) => {
+  // parses the request url
   const parsedURL = url.parse(request.url);
 
-  // console.dir(parsedURL);
-
+  // gets the url path
   const { pathname } = parsedURL;
 
+  // parses the query parameters, for ease of use
   const params = query.parse(parsedURL.query);
 
+  // Gets the accept types from the request
   const acceptHeader = request.headers.accept.split(',');
 
+  // Uses the urlResponses struct to call the correct function.
   if (urlResponses[pathname]) {
     urlResponses[pathname](request, response, params, acceptHeader);
   } else {
@@ -36,6 +41,7 @@ const onRequest = (request, response) => {
   }
 };
 
+// sets up the server
 http.createServer(onRequest).listen(port);
 
 console.log(`Listening on 127.0.0.1: ${port}`);

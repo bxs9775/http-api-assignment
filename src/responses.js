@@ -1,8 +1,10 @@
 const fs = require('fs');
 
+// file paths
 const index = fs.readFileSync(`${__dirname}/../client/client.html`);
 const css = fs.readFileSync(`${__dirname}/../client/style.css`);
 
+// a struct that maps an error id to other relvant error information
 const errors = {
   success: {
     code: 200,
@@ -36,12 +38,14 @@ const errors = {
 
 
 // Private methods
+// writes a response with the given content. Uses errId to figure out what error code to use.
 const respond = (request, response, errId, content, accept) => {
   response.writeHeader(errors[errId].code, { 'Content-Type': accept });
   response.write(content);
   response.end();
 };
 
+// provides a response with a basic success status
 const successMessage = (request, response, accept) => {
   const errId = 'success';
   if (accept[0] === 'text/xml') {
@@ -56,6 +60,7 @@ const successMessage = (request, response, accept) => {
   }
 };
 
+// responds with an error, and related details
 const failureMessage = (request, response, errId, accept) => {
   if (accept[0] === 'text/xml') {
     let xmlObj = '<response>';
@@ -74,18 +79,23 @@ const failureMessage = (request, response, errId, accept) => {
 };
 
 // Public get methods
+// gets the index for the server(client.html)
 const getIndex = (request, response, params, accept) => {
-  respond(request, response, 'success', index, 'text/html');
+  respond(request, response, 'success', index, accept[0]);
 };
 
+// gets the css stylesheet for the server (style.css)
 const getCss = (request, response, params, accept) => {
-  respond(request, response, 'success', css, 'text/css');
+  respond(request, response, 'success', css, accept[0]);
 };
 
+// gets the response for the '/success' url
 const getSuccess = (request, response, params, accept) => {
   successMessage(request, response, accept);
 };
 
+// gets the response for the '/badRequest' url
+// responds with success status if 'valid' query param is 'true', and with an error otherwise.
 const getBadRequest = (request, response, params, accept) => {
   if (!params.valid || params.valid !== 'true') {
     failureMessage(request, response, 'badRequest', accept);
@@ -94,6 +104,8 @@ const getBadRequest = (request, response, params, accept) => {
   }
 };
 
+// gets the response for the '/unauthorized' url
+// responds with success status if 'loggedIn' query param is 'yes', and with an error otherwise.
 const getUnauthorized = (request, response, params, accept) => {
   if (!params.loggedIn || params.loggedIn !== 'yes') {
     failureMessage(request, response, 'unauthorized', accept);
@@ -102,19 +114,22 @@ const getUnauthorized = (request, response, params, accept) => {
   }
 };
 
+// gets the response for the '/forbidden' url
 const getForbidden = (request, response, params, accept) => {
   failureMessage(request, response, 'forbidden', accept);
 };
 
+// gets the response for the '/notImplemented' url
 const getNotImplemented = (request, response, params, accept) => {
   failureMessage(request, response, 'notImplemented', accept);
 };
 
+// gets the response for the '/internal' url
 const getInternal = (request, response, params, accept) => {
   failureMessage(request, response, 'internal', accept);
 };
 
-
+// responds with a 404 error for any url that does not have a set response
 const getNotFound = (request, response, url, accept) => {
   failureMessage(request, response, 'notFound', accept);
 };
